@@ -35,12 +35,102 @@
 
 \justifying
 
-\subsection{}
+\subsection{Primer on Graph Representations}
 
 \begin{enumerate}
-	\item 
+	\item Mathematical definition of graphs: 
+	
+	A \textit{graph} $\mathcal{G}=(\mathcal{V}, \mathcal{E})$ is a collection of nodes $\mathcal{V}$ and edges $\mathcal{E}\subseteq\mathcal{V}\times\mathcal{V}$.
+	
+	The edges can be represented by an \textit{adjacency matrix}, $\mathbf{A}\in\mathbb{R}^{|\mathcal{V}|\times|\mathcal{V}|}$, such that
+	$$A_{uv}=\begin{cases}
+		1 &\text{if }(u,v)\in\mathcal{E}\\
+		0 &\text{otherwise}
+	\end{cases}$$
+
+	\item Some interesting graph types:
 	\begin{itemize}[topsep=0pt]
-		\item 
+		\item \textbf{Undirected}: $\forall u, v\in\mathcal{V}.\ (u,v)\in\mathcal{E}\Longleftrightarrow (u,v)\in\mathcal{E}$ (i.e., $\mathbf{A}^T=\mathbf{A}$)
+		\item \textbf{Weighted}: provided \textit{edge weight} $w_{uv}$ for every edge $(u,v)\in\mathcal{E}$
+		\item \textbf{Multirelational}:~various~\textit{edge~types},~i.e.~$(u,t,v)\in\mathcal{E}$~if~there~exists~an~edge~$(u,v)$~linked~by~type~$t$
+		\item \textbf{Heterogeneous}: various \textit{node types}
+	\end{itemize}
+
+	\item Machine learning tasks on graphs by domain:
+	\begin{itemize}[topsep=0pt]
+		\item \textbf{Transductive}: training algorithm sees all observations, including the holdout observations
+		\begin{itemize}[topsep=0pt]
+			\item Task is to \textit{propagate} labels from the training observations to the holdout observations 
+			\item Also called \textit{semi-supervised learning}
+		\end{itemize}
+		\item \textbf{Inductive}: training algorithm only sees the training observations during training, and only sees the holdout observations for prediction.
+	\end{itemize}
+
+	\item Node statistics:
+	\begin{itemize}[topsep=0pt]
+		\item \textbf{Degree}: amount of edges the node is incident to:
+		$$d_u=\sum_{v\in\mathcal{V}}A_{uv}$$
+		\item \textbf{Centrality}: a measure of how ``central'' the node is in the graph: how often do infinite random walks visit the node?
+		$$d_u=\lambda^{-1}\sum_{v\in\mathcal{V}}A_{uv}e_v$$
+		where $\mathbf{e}\in\mathbb{R}^{|\mathcal{V}|}$ is the largest eigenvector of $\mathbf{A}$, with corresponding eigenvalue $\lambda$.
+		\item \textbf{Clustering coefficient}: a measure of ``clusteredness'': are neighbours connected amongst each other?
+		$$c_u=\frac{\big|\{(v_1, v_2)\in\mathcal{E}:v_1, v_2\in\mathcal{N}(u)\}\big|}{{d_u \choose 2}}$$
+	\end{itemize}
+
+%	\item Erd\H{o}s-R\'{e}nyi (ER) random graphs: modelling a data network $\mathcal{G}=(\mathcal{V}, \mathcal{E})$ with $|\mathcal{V}|=n$ and $|\mathcal{E}|=m$
+%	\begin{itemize}[topsep=0pt]
+%		\item Edges are added between pairs of nodes uniformly at random with the same probability $p$
+%		\item Two equivalent methods for constructing ER graphs:
+%		\begin{itemize}
+%			\item $\mathcal{G}_{n,p}$: pick $p$ so that the resulting model network has $m$ edges
+%			\item $\mathcal{G}_{n,m}$: pick randomly $m$ pairs of nodes and add edges between them
+%			\item Degree distribution:
+%			$$\Pr(\text{deg}(v)=k)={n-1 \choose k}p^k(1-p)^{(n-1)-k}$$
+%			For $n\to\infty$, $np=\text{constant}$ and small $k$:
+%			$$\Pr(\text{deg}(v)=k)\to\frac{(np)^k e^{-np}}{k!}\qquad\text{(Poisson distribution)}$$
+%			\item $\text{Clustering coefficient}=p$
+%		\end{itemize}
+%	\end{itemize}
+
+	\item Graph Laplacian:
+	
+	Let $\mathbf{D}$ be the diagonal (out)-degree matrix of the graph, i.e., $D_{uu}=\sum_{v\in\mathcal{V}}A_{ij}$. Then:
+	\begin{itemize}[topsep=0pt]
+		\item The \textit{unnormalised} graph Laplacian: $\mathbf{L}=\mathbf{D}-\mathbf{A}$
+		\item The \textit{symmetric} graph Laplacian: $\mathbf{L}_\text{sym}=\mathbf{D}^{-\frac{1}{2}}\mathbf{L}\mathbf{D}^{-\frac{1}{2}}=\mathbf{I}-\mathbf{D}^{-\frac{1}{2}}\mathbf{A}\mathbf{D}^{-\frac{1}{2}}$
+		\item The \textit{random walk} graph Laplacian: $\mathbf{L}_\text{RW}=\mathbf{D}^{-1}\mathbf{L}=\mathbf{I}-\mathbf{D}^{-1}\mathbf{A}$
+	\end{itemize}
+	
+	Properties:
+	\begin{itemize}[topsep=0pt]
+		\item For undirected graphs, $\mathbf{L}$ is \textit{symmetric} ($\mathbf{L}^T=\mathbf{L}$) and \textit{positive semi-definite} ($\forall\mathbf{x}\in\mathbb{R}^{|\mathcal{V}|}.\ \mathbf{x}^T\mathbf{L}\mathbf{x}\geq0$)
+		\item For all $\mathbf{x}\in\mathbb{R}^{|\mathcal{V}|}$: 
+		$$\mathbf{x}^T\mathbf{L}\mathbf{x}=\frac{1}{2}\sum_{u\in\mathcal{V}}\sum_{v\in\mathcal{V}}A_{uv}(x_u-x_v)^2=\sum_{(u,v)\in\mathcal{E}}(x_u-x_v)^2$$
+		\item $\mathbf{L}$ has $|\mathcal{V}|$ nonnegative eigenvalues: $\lambda_1\geq\cdots\geq\lambda_{|V|}=0$
+	\end{itemize}
+	\newpage
+	\item Spectral clustering:
+	\begin{itemize}[topsep=0pt]
+		\item Two-way cut: partition the graph into $\mathcal{A}\subseteq\mathcal{V}$ and its complement $\mathcal{A}_c\subseteq\mathcal{V}$:
+		$$\text{Cut}(\mathcal{A})=\big|\{(u, v)\in\mathcal{E}:u\in\mathcal{A}\wedge v\in\mathcal{A}_c\}\big|$$
+		\textit{Ratio cut} metric:
+		$$\text{RCut}(\mathcal{A})=\text{Cut}(\mathcal{A})\left(\frac{1}{|\mathcal{A}|}+\frac{1}{|\mathcal{A}_c|}\right)$$
+		\item Minimising $\text{RCut}(\mathcal{A})$:
+		
+		Let $\mathbf{a}\in\mathbb{R}^{|\mathcal{V}|}$ be a vector representing the cut $\mathcal{A}$, defined as follows:
+		$$a_u=\begin{cases}
+			\sqrt{\frac{\mathcal{A}_c}{\mathcal{A}}} &\text{if }u\in\mathcal{A}\\
+			-\sqrt{\frac{\mathcal{A}}{\mathcal{A}_c}} &\text{if }u\in\mathcal{A}_c\\
+		\end{cases}$$
+		Then
+		$$\mathbf{a}^T\mathbf{L}\mathbf{a}=\sum_{(u,v)\in\mathcal{E}}(a_u-a_v)^2=|\mathcal{V}|\text{RCut}(\mathcal{A})$$
+		Minimising $\mathbf{a}^T\mathbf{L}\mathbf{a}$ corresponds to minimising $\text{RCut}(\mathcal{A})$ (NP-hard as the condition is discrete)
+		\item Relaxing: minimise $\mathbf{a}^T\mathbf{L}\mathbf{a}$ subject to $\mathbf{a}\perp\mathbf{1}$ and $||\mathbf{a}||^2=|\mathcal{V}|$
+		
+		\textit{Rayleigh--Ritz Theorem}: The solution is exactly the second-smallest eigenvector of $\mathbf{L}$
+		
+		To obtain the cut, place $u$ into $\mathcal{A}$ or $\mathcal{A}_c$ depending on the sign of $a_u$
+		\item Can be generalised to $k$-clustering 
 	\end{itemize}
 \end{enumerate}
 
