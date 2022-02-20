@@ -12,6 +12,7 @@
 \usepackage{color}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
 \usepackage{latexsym}
 \usepackage{multicol}
 \usepackage{newpxtext}
@@ -40,7 +41,7 @@
 \begin{enumerate}
 	\item Mathematical definition of graphs: 
 	
-	A \textit{graph} $\mathcal{G}=(\mathcal{V}, \mathcal{E})$ is a collection of nodes $\mathcal{V}$ and edges $\mathcal{E}\subseteq\mathcal{V}\times\mathcal{V}$.
+	A \textit{graph} $\mathcal{G}=(\mathcal{V}, \mathcal{E})$ is a collection of nodes $\mathcal{V}$ and edges $\mathcal{E}\subseteq\mathcal{V}\times\mathcal{V}$
 	
 	The edges can be represented by an \textit{adjacency matrix}, $\mathbf{A}\in\mathbb{R}^{|\mathcal{V}|\times|\mathcal{V}|}$, such that
 	$$A_{uv}=\begin{cases}
@@ -63,7 +64,7 @@
 			\item Task is to \textit{propagate} labels from the training observations to the holdout observations 
 			\item Also called \textit{semi-supervised learning}
 		\end{itemize}
-		\item \textbf{Inductive}: training algorithm only sees the training observations during training, and only sees the holdout observations for prediction.
+		\item \textbf{Inductive}: training algorithm only sees the training observations during training, and only sees the holdout observations for prediction
 	\end{itemize}
 
 	\item Node statistics:
@@ -72,9 +73,9 @@
 		$$d_u=\sum_{v\in\mathcal{V}}A_{uv}$$
 		\item \textbf{Centrality}: a measure of how ``central'' the node is in the graph: how often do infinite random walks visit the node?
 		$$d_u=\lambda^{-1}\sum_{v\in\mathcal{V}}A_{uv}e_v$$
-		where $\mathbf{e}\in\mathbb{R}^{|\mathcal{V}|}$ is the largest eigenvector of $\mathbf{A}$, with corresponding eigenvalue $\lambda$.
+		where $\mathbf{e}\in\mathbb{R}^{|\mathcal{V}|}$ is the largest eigenvector of $\mathbf{A}$, with corresponding eigenvalue $\lambda$
 		\item \textbf{Clustering coefficient}: a measure of ``clusteredness'': are neighbours connected amongst each other?
-		$$c_u=\frac{\big|\{(v_1, v_2)\in\mathcal{E}:v_1, v_2\in\mathcal{N}(u)\}\big|}{{d_u \choose 2}}$$
+		$$c_u=\frac{\left|\big\{(v_1, v_2)\in\mathcal{E}\big|v_1, v_2\in\mathcal{N}(u)\big\}\right|}{{d_u \choose 2}}$$
 	\end{itemize}
 
 %	\item Erd\H{o}s-R\'{e}nyi (ER) random graphs: modelling a data network $\mathcal{G}=(\mathcal{V}, \mathcal{E})$ with $|\mathcal{V}|=n$ and $|\mathcal{E}|=m$
@@ -104,15 +105,15 @@
 	Properties:
 	\begin{itemize}[topsep=0pt]
 		\item For undirected graphs, $\mathbf{L}$ is \textit{symmetric} ($\mathbf{L}^T=\mathbf{L}$) and \textit{positive semi-definite} ($\forall\mathbf{x}\in\mathbb{R}^{|\mathcal{V}|}.\ \mathbf{x}^T\mathbf{L}\mathbf{x}\geq0$)
-		\item For all $\mathbf{x}\in\mathbb{R}^{|\mathcal{V}|}$: 
-		$$\mathbf{x}^T\mathbf{L}\mathbf{x}=\frac{1}{2}\sum_{u\in\mathcal{V}}\sum_{v\in\mathcal{V}}A_{uv}(x_u-x_v)^2=\sum_{(u,v)\in\mathcal{E}}(x_u-x_v)^2$$
+		\item For undirected graphs:
+		$$\forall \mathbf{x}\in\mathbb{R}^{|\mathcal{V}|}.\ \mathbf{x}^T\mathbf{L}\mathbf{x}=\frac{1}{2}\sum_{u\in\mathcal{V}}\sum_{v\in\mathcal{V}}A_{uv}(x_u-x_v)^2=\sum_{(u,v)\in\mathcal{E}}(x_u-x_v)^2$$
 		\item $\mathbf{L}$ has $|\mathcal{V}|$ nonnegative eigenvalues: $\lambda_1\geq\cdots\geq\lambda_{|V|}=0$
 	\end{itemize}
 	\newpage
 	\item Spectral clustering:
 	\begin{itemize}[topsep=0pt]
 		\item Two-way cut: partition the graph into $\mathcal{A}\subseteq\mathcal{V}$ and its complement $\mathcal{A}_c\subseteq\mathcal{V}$:
-		$$\text{Cut}(\mathcal{A})=\big|\{(u, v)\in\mathcal{E}:u\in\mathcal{A}\wedge v\in\mathcal{A}_c\}\big|$$
+		$$\text{Cut}(\mathcal{A})=\left|\big\{(u, v)\in\mathcal{E}\big|u\in\mathcal{A}\wedge v\in\mathcal{A}_c\big\}\right|$$
 		\textit{Ratio cut} metric:
 		$$\text{RCut}(\mathcal{A})=\text{Cut}(\mathcal{A})\left(\frac{1}{|\mathcal{A}|}+\frac{1}{|\mathcal{A}_c|}\right)$$
 		\item Minimising $\text{RCut}(\mathcal{A})$:
@@ -124,14 +125,89 @@
 		\end{cases}$$
 		Then
 		$$\mathbf{a}^T\mathbf{L}\mathbf{a}=\sum_{(u,v)\in\mathcal{E}}(a_u-a_v)^2=|\mathcal{V}|\text{RCut}(\mathcal{A})$$
-		Minimising $\mathbf{a}^T\mathbf{L}\mathbf{a}$ corresponds to minimising $\text{RCut}(\mathcal{A})$ (NP-hard as the condition is discrete)
+		Minimising $\mathbf{a}^T\mathbf{L}\mathbf{a}$ corresponds to minimising $\text{RCut}(\mathcal{A})$ (NP-hard as the constraint is discrete)
 		\item Relaxing: minimise $\mathbf{a}^T\mathbf{L}\mathbf{a}$ subject to $\mathbf{a}\perp\mathbf{1}$ and $||\mathbf{a}||^2=|\mathcal{V}|$
 		
-		\textit{Rayleigh--Ritz Theorem}: The solution is exactly the second-smallest eigenvector of $\mathbf{L}$
+		Rayleigh--Ritz Theorem: The solution is exactly the second-smallest eigenvector of $\mathbf{L}$
 		
 		To obtain the cut, place $u$ into $\mathcal{A}$ or $\mathcal{A}_c$ depending on the sign of $a_u$
 		\item Can be generalised to $k$-clustering 
 	\end{itemize}
 \end{enumerate}
+
+\subsection{Permutation Invariance and Equivariance}
+
+\begin{enumerate}
+	\item Informal definitions:
+	\begin{itemize}[topsep=0pt]
+		\item \textbf{Permutation invariance}: applying a permutation matrix does not modify the result
+		\item \textbf{Permutation equivariance}: transformation preserves the node order
+		\item \textbf{Locality}: signal remains stable under slight deformations of the domain
+	\end{itemize}
+
+	\item Setup:
+	\begin{itemize}[topsep=0pt]
+		\item \textbf{Node feature matrix}: $\mathbf{X}=\begin{bmatrix}
+			\mathbf{x}_1 & \cdots & \mathbf{x}_{|\mathcal{V}|}
+		\end{bmatrix}^T\in\mathbb{R}^{|\mathcal{V}|\times k}$, where $\mathbf{x}_i\in\mathbb{R}^k$ is the features of node $i$
+		\item \textbf{(1-hop) neighbourhood} of node $i$: $\mathcal{N}_i=\big\{j\big|(i,j)\in\mathcal{E}\vee(j,i)\in\mathcal{E}\big\}$
+		\item \textbf{Neighbourhood features}: $\mathbf{X}_{\mathcal{N}_i}=\{\!\{\mathbf{x}_j|j\in\mathcal{N}_i\}\!\}$
+		\item \textbf{Permutation matrix}: a $|\mathcal{V}|\times|\mathcal{V}|$ binary matrix that has exactly one entry of 1 in every row and column, and 0s elsewhere: $\mathbf{P}=\begin{bmatrix}
+			\mathbf{e}_{\pi(1)} & \cdots & \mathbf{e}_{\pi(|\mathcal{V}|)}
+		\end{bmatrix}^T$
+	\end{itemize}
+
+	\item Learning on sets:
+	\begin{itemize}[topsep=0pt]
+		\item $f(\mathbf{X})$ is \textit{permutation invariant} if for all permutation matrices $\mathbf{P}$: $f(\mathbf{PX})=f(\mathbf{X})$
+		\item $\bm{F}(\mathbf{X})$ is \textit{permutataion equivariant} if for all permutation matrices $\mathbf{P}$: $\bm{F}(\mathbf{PX})=\mathbf{P}\bm{F}(\mathbf{X})$ 
+		\item Locality on sets: transform every node in isolation, through a shared function $\psi$: $\mathbf{h}_i=\psi(\mathbf{x}_i)$
+		
+		Stacking $\mathbf{h}_i$ into a matrix yields $\mathbf{H}=\bm{F}(\mathbf{X})$:
+		$$\bm{F}(\mathbf{X})=\begin{bmatrix}
+			\text{---} & \!\!\!\psi(\mathbf{x}_1) & \!\!\!\text{{--}{--}} \\ 
+			{} & \vdots & {} \\
+			\text{{--}{--}} & \!\!\!\psi(\mathbf{x}_{|\mathcal{V}|}) & \!\!\!\text{{--}{--}}
+		\end{bmatrix}$$
+		\item Deep Sets \href{https://papers.nips.cc/paper/2017/file/f22e4747da1aa27e363d86d40ff442fe-Paper.pdf}{(Zaheer \textit{et al.}, NIPS 2017)}: 
+		$$f(\mathbf{X})=\phi\left(\bigoplus_{i\in\mathcal{V}}\psi(\mathbf{x}_i)\right)$$
+		Universality of Deep Sets: any permutation invariant model can be expressed as a Deep Sets
+	\end{itemize}
+
+	\item Learning on graphs:
+	\begin{itemize}[topsep=0pt]
+		\item $f(\mathbf{X})$ is \textit{permutation invariant} if for all permutation matrices $\mathbf{P}$: $f(\mathbf{PX},\mathbf{PA}\mathbf{P}^T)=f(\mathbf{X},\mathbf{A})$
+		\item $\bm{F}(\mathbf{X})$ is \textit{permutataion equivariant} if for all permutation matrices $\mathbf{P}$: $\bm{F}(\mathbf{PX},\mathbf{PA}\mathbf{P}^T)=\mathbf{P}\bm{F}(\mathbf{X},\mathbf{A})$ 
+		\item Locality on graphs: apply a local function $\phi$ over all neighbourhoods:
+		$$\bm{F}(\mathbf{X},\mathbf{A})=\begin{bmatrix}
+			\text{---} & \!\!\!\phi(\mathbf{x}_1,\mathbf{X}_{\mathcal{N}_1}) & \!\!\!\text{{--}{--}} \\ 
+			{} & \vdots & {} \\
+			\text{{--}{--}} & \!\!\!\phi(\mathbf{x}_{|\mathcal{V}|},\mathbf{X}_{\mathcal{N}_{|\mathcal{V}|}}) & \!\!\!\text{{--}{--}}
+		\end{bmatrix}$$
+		To ensure permutation equivariance, it is sufficient that $\phi$ is permutation invariant in $\mathbf{X}_{\mathcal{N}_i}$
+	\end{itemize}
+\end{enumerate}
+
+\newpage
+
+\subsection*{Appendix: Mathematical Notations}
+
+\renewcommand\arraystretch{1.5}
+\begin{tabular}{p{2cm}p{12cm}}
+	$\displaystyle a$ & A scalar (integer or real) \\
+	$\displaystyle \mathbf{a}$ & A vector \\
+	$\displaystyle \mathbf{A}$ & A matrix \\
+	$\displaystyle \mathcal{A}\text{ or }\{\cdot\}$ & A set \\
+	$\displaystyle \{\!\{\cdot\}\!\}$ & A multiset \\
+	$\displaystyle |\mathcal{A}|$ & Cardinality of set $\mathcal{A}$ \\
+	$\displaystyle \mathbb{R}$ & The set of real numbers \\
+	$\displaystyle a_i$ & Element $i$ of vector $\mathbf{a}$, with indexing starting at 1 \\
+	$\displaystyle A_{ij}$ & Element $i$, $j$ of matrix $\mathbf{A}$, with indexing starting at 1 \\
+	$\displaystyle f$ & A function \\
+	$\displaystyle \bm{F}$ & A matrix-valued function \\
+	$\displaystyle \pi$ & A permutation \\
+	$\displaystyle \phi, \psi, \cdots$ & Learnable functions (e.g., MLPs) \\
+	$\displaystyle \oplus$ & A permutation-invariant operator (e.g., sum, mean, min, max)
+\end{tabular}
 
 \end{document}
