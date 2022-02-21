@@ -16,7 +16,7 @@
 \usepackage{latexsym}
 \usepackage{multicol}
 \usepackage{newpxtext}
-\usepackage{newpxmath}
+%\usepackage{newpxmath}
 \usepackage{ragged2e}
 \usepackage{subcaption}
 \usepackage{textcomp}
@@ -51,7 +51,7 @@
 
 	\item Some interesting graph types:
 	\begin{itemize}[topsep=0pt]
-		\item \textbf{Undirected}: $\forall u, v\in\mathcal{V}.\ (u,v)\in\mathcal{E}\Longleftrightarrow (u,v)\in\mathcal{E}$ (i.e., $\mathbf{A}^T=\mathbf{A}$)
+		\item \textbf{Undirected}: $\forall u, v\in\mathcal{V}.\ (u,v)\in\mathcal{E}\Longleftrightarrow (u,v)\in\mathcal{E}$ (i.e., $\mathbf{A}^\top=\mathbf{A}$)
 		\item \textbf{Weighted}: provided \textit{edge weight} $w_{uv}$ for every edge $(u,v)\in\mathcal{E}$
 		\item \textbf{Multirelational}:~various~\textit{edge~types},~i.e.~$(u,t,v)\in\mathcal{E}$~if~there~exists~an~edge~$(u,v)$~linked~by~type~$t$
 		\item \textbf{Heterogeneous}: various \textit{node types}
@@ -104,9 +104,9 @@
 	
 	Properties:
 	\begin{itemize}[topsep=0pt]
-		\item For undirected graphs, $\mathbf{L}$ is \textit{symmetric} ($\mathbf{L}^T=\mathbf{L}$) and \textit{positive semi-definite} ($\forall\mathbf{x}\in\mathbb{R}^{|\mathcal{V}|}.\ \mathbf{x}^T\mathbf{L}\mathbf{x}\geq0$)
+		\item For undirected graphs, $\mathbf{L}$ is \textit{symmetric} ($\mathbf{L}^\top=\mathbf{L}$) and \textit{positive semi-definite} ($\forall\mathbf{x}\in\mathbb{R}^{|\mathcal{V}|}.\ \mathbf{x}^\top\mathbf{L}\mathbf{x}\geq0$)
 		\item For undirected graphs:
-		$$\forall \mathbf{x}\in\mathbb{R}^{|\mathcal{V}|}.\ \mathbf{x}^T\mathbf{L}\mathbf{x}=\frac{1}{2}\sum_{u\in\mathcal{V}}\sum_{v\in\mathcal{V}}A_{uv}(x_u-x_v)^2=\sum_{(u,v)\in\mathcal{E}}(x_u-x_v)^2$$
+		$$\forall \mathbf{x}\in\mathbb{R}^{|\mathcal{V}|}.\ \mathbf{x}^\top\mathbf{L}\mathbf{x}=\frac{1}{2}\sum_{u\in\mathcal{V}}\sum_{v\in\mathcal{V}}A_{uv}(x_u-x_v)^2=\sum_{(u,v)\in\mathcal{E}}(x_u-x_v)^2$$
 		\item $\mathbf{L}$ has $|\mathcal{V}|$ nonnegative eigenvalues: $\lambda_1\geq\cdots\geq\lambda_{|V|}=0$
 	\end{itemize}
 	\newpage
@@ -124,9 +124,9 @@
 			-\sqrt{\frac{\mathcal{A}}{\mathcal{A}_c}} &\text{if }u\in\mathcal{A}_c\\
 		\end{cases}$$
 		Then
-		$$\mathbf{a}^T\mathbf{L}\mathbf{a}=\sum_{(u,v)\in\mathcal{E}}(a_u-a_v)^2=|\mathcal{V}|\text{RCut}(\mathcal{A})$$
-		Minimising $\mathbf{a}^T\mathbf{L}\mathbf{a}$ corresponds to minimising $\text{RCut}(\mathcal{A})$ (NP-hard as the constraint is discrete)
-		\item Relaxing: minimise $\mathbf{a}^T\mathbf{L}\mathbf{a}$ subject to $\mathbf{a}\perp\mathbf{1}$ and $||\mathbf{a}||^2=|\mathcal{V}|$
+		$$\mathbf{a}^\top\mathbf{L}\mathbf{a}=\sum_{(u,v)\in\mathcal{E}}(a_u-a_v)^2=|\mathcal{V}|\text{RCut}(\mathcal{A})$$
+		Minimising $\mathbf{a}^\top\mathbf{L}\mathbf{a}$ corresponds to minimising $\text{RCut}(\mathcal{A})$ (NP-hard as the constraint is discrete)
+		\item Relaxing: minimise $\mathbf{a}^\top\mathbf{L}\mathbf{a}$ subject to $\mathbf{a}\perp\mathbf{1}$ and $||\mathbf{a}||^2=|\mathcal{V}|$
 		
 		Rayleigh--Ritz Theorem: The solution is exactly the second-smallest eigenvector of $\mathbf{L}$
 		
@@ -149,12 +149,12 @@
 	\begin{itemize}[topsep=0pt]
 		\item \textbf{Node feature matrix}: $\mathbf{X}=\begin{bmatrix}
 			\mathbf{x}_1 & \cdots & \mathbf{x}_{|\mathcal{V}|}
-		\end{bmatrix}^T\in\mathbb{R}^{|\mathcal{V}|\times k}$, where $\mathbf{x}_i\in\mathbb{R}^k$ is the features of node $i$
+		\end{bmatrix}^\top\in\mathbb{R}^{|\mathcal{V}|\times k}$, where $\mathbf{x}_i\in\mathbb{R}^k$ is the features of node $i$
 		\item \textbf{(1-hop) neighbourhood} of node $i$: $\mathcal{N}_i=\big\{j\big|(i,j)\in\mathcal{E}\vee(j,i)\in\mathcal{E}\big\}$
 		\item \textbf{Neighbourhood features}: $\mathbf{X}_{\mathcal{N}_i}=\{\!\{\mathbf{x}_j|j\in\mathcal{N}_i\}\!\}$
 		\item \textbf{Permutation matrix}: a $|\mathcal{V}|\times|\mathcal{V}|$ binary matrix that has exactly one entry of 1 in every row and column, and 0s elsewhere: $\mathbf{P}=\begin{bmatrix}
 			\mathbf{e}_{\pi(1)} & \cdots & \mathbf{e}_{\pi(|\mathcal{V}|)}
-		\end{bmatrix}^T$
+		\end{bmatrix}^\top$
 	\end{itemize}
 
 	\item Learning on sets:
@@ -176,8 +176,8 @@
 
 	\item Learning on graphs:
 	\begin{itemize}[topsep=0pt]
-		\item $f(\mathbf{X})$ is \textit{permutation invariant} if for all permutation matrices $\mathbf{P}$: $f(\mathbf{PX},\mathbf{PA}\mathbf{P}^T)=f(\mathbf{X},\mathbf{A})$
-		\item $\bm{F}(\mathbf{X})$ is \textit{permutataion equivariant} if for all permutation matrices $\mathbf{P}$: $\bm{F}(\mathbf{PX},\mathbf{PA}\mathbf{P}^T)=\mathbf{P}\bm{F}(\mathbf{X},\mathbf{A})$ 
+		\item $f(\mathbf{X})$ is \textit{permutation invariant} if for all permutation matrices $\mathbf{P}$: $f(\mathbf{PX},\mathbf{PA}\mathbf{P}^\top)=f(\mathbf{X},\mathbf{A})$
+		\item $\bm{F}(\mathbf{X})$ is \textit{permutataion equivariant} if for all permutation matrices $\mathbf{P}$: $\bm{F}(\mathbf{PX},\mathbf{PA}\mathbf{P}^\top)=\mathbf{P}\bm{F}(\mathbf{X},\mathbf{A})$ 
 		\item Locality on graphs: apply a local function $\phi$ over all neighbourhoods:
 		$$\bm{F}(\mathbf{X},\mathbf{A})=\begin{bmatrix}
 			\text{---} & \!\!\!\phi(\mathbf{x}_1,\mathbf{X}_{\mathcal{N}_1}) & \!\!\!\text{{--}{--}} \\ 
