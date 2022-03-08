@@ -10,6 +10,7 @@
 \usepackage{bussproofs}
 \usepackage{bm}
 \usepackage{color}
+\usepackage[dvipsnames]{xcolor}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage[hidelinks]{hyperref}
@@ -149,7 +150,7 @@
 	\begin{itemize}[topsep=0pt]
 		\item \textbf{Node feature matrix}: $\mathbf{X}=\begin{bmatrix}
 			\mathbf{x}_1 & \cdots & \mathbf{x}_{|\mathcal{V}|}
-		\end{bmatrix}^\top\in\mathbb{R}^{|\mathcal{V}|\times k}$, where $\mathbf{x}_i\in\mathbb{R}^k$ is the features of node $i$
+		\end{bmatrix}^\top\in\mathbb{R}^{|\mathcal{V}|\times k}$, where $\mathbf{x}_i\in\mathbb{R}^k$ is the features of node~$i$
 		\item \textbf{(1-hop) neighbourhood} of node $i$: $\mathcal{N}_i=\big\{j\big|(i,j)\in\mathcal{E}\vee(j,i)\in\mathcal{E}\big\}$
 		\item \textbf{Neighbourhood features}: $\mathbf{X}_{\mathcal{N}_i}=\{\!\{\mathbf{x}_j|j\in\mathcal{N}_i\}\!\}$
 		\item \textbf{Permutation matrix}: a $|\mathcal{V}|\times|\mathcal{V}|$ binary matrix that has exactly one entry of 1 in every row and column, and 0s elsewhere: $\mathbf{P}=\begin{bmatrix}
@@ -169,7 +170,7 @@
 			{} & \vdots & {} \\
 			\text{{--}{--}} & \!\!\!\psi(\mathbf{x}_{|\mathcal{V}|}) & \!\!\!\text{{--}{--}}
 		\end{bmatrix}$$
-		\item Deep Sets \href{https://papers.nips.cc/paper/2017/file/f22e4747da1aa27e363d86d40ff442fe-Paper.pdf}{(Zaheer \textit{et al.}, NIPS 2017)}: 
+		\item Deep Sets (\href{https://papers.nips.cc/paper/2017/file/f22e4747da1aa27e363d86d40ff442fe-Paper.pdf}{Zaheer \textit{et al.}, NIPS 2017}):
 		$$f(\mathbf{X})=\phi\left(\bigoplus_{i\in\mathcal{V}}\psi(\mathbf{x}_i)\right)$$
 		Universality of Deep Sets: any permutation invariant model can be expressed as a Deep Sets
 	\end{itemize}
@@ -190,6 +191,73 @@
 
 \subsection{Graph Neural Networks}
 
+\begin{enumerate}
+	\item Graph Networks (\href{https://arxiv.org/pdf/1806.01261.pdf}{Battaglia \textit{et al.}, 2018}):
+	
+	Data flow:
+	\begin{itemize}[topsep=0pt]
+		\item Update edge features (using relevant nodes + graph)
+		$$\mathbf{h}_{uv}=\psi(\mathbf{x}_u,\mathbf{x}_v,\mathbf{x}_{uv},\mathbf{x}_\mathcal{G})$$
+		\item Update node features (using updated relevant edges + graph)
+		$$\mathbf{h}_{u}=\phi\left(\mathbf{x}_u,\bigoplus_{u\in\mathcal{N}_v}\mathbf{h}_{uv},\mathbf{x}_\mathcal{G}\right)$$
+		\item Update graph features (using updated nodes + edges)
+		$$\mathbf{h}_\mathcal{G}=\rho\left(\bigoplus_{u\in\mathcal{V}}\mathbf{h}_{u},\bigoplus_{(u,v)\in\mathcal{E}}\mathbf{h}_{uv},\mathbf{x}_\mathcal{G}\right)$$
+	\end{itemize}
+	Visualisation (\textcolor{RoyalBlue}{\bf equivariant} and \textcolor{OrangeRed}{\bf invariant} layers):
+	\begin{figure}[h]
+		\centering
+		\hspace*{4em}\includegraphics[width=0.4\textwidth]{figs/graph-network}
+	\end{figure}
+
+	\item Three flavours of GNN layers:
+	\begin{figure}[h]
+		\centering
+		\begin{subfigure}[b]{0.3\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{figs/convolutional-gnn}
+			\caption{Convolutional}
+			\label{fig:convolutional-gnn}
+		\end{subfigure}
+		\begin{subfigure}[b]{0.3\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{figs/attentional-gnn}
+			\caption{Attentional}
+			\label{fig:attentional-gnn}
+		\end{subfigure}
+		\begin{subfigure}[b]{0.3\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{figs/message-passing-gnn}
+			\caption{Message-passing}
+			\label{fig:message-passing-gnn}
+		\end{subfigure}
+	\end{figure}
+	\vspace*{-1.5\baselineskip}
+	$$\begin{array}{ccc}
+		\hspace*{-3em}\mathbf{h}_i=\phi\left(\mathbf{x}_i,\displaystyle\bigoplus_{j\in\mathcal{N}_i}c_{ij}\psi(\mathbf{x}_j)\right) & 
+		\mathbf{h}_i=\phi\left(\mathbf{x}_i,\displaystyle\bigoplus_{j\in\mathcal{N}_i}a(\mathbf{x}_i,\mathbf{x}_j)\psi(\mathbf{x}_j)\right) &
+		\mathbf{h}_i=\phi\left(\mathbf{x}_i,\displaystyle\bigoplus_{j\in\mathcal{N}_i}\psi(\mathbf{x}_i,\mathbf{x}_j)\right)
+	\end{array}$$
+	
+	\item Convolutional GNNs:
+	\begin{itemize}[topsep=0pt]
+		\item Graph Convolutional Network (GCN; \href{https://openreview.net/pdf?id=SJU4ayYgl}{Kipf \& Welling, ICLR 2017}):
+		$$\mathbf{H}=\sigma\left(\tilde{\mathbf{D}}^{-\frac{1}{2}}\tilde{\mathbf{A}}\tilde{\mathbf{D}}^{-\frac{1}{2}}\mathbf{X}\mathbf{W}\right)$$
+		where $\tilde{\mathbf{A}}=\mathbf{A}+\mathbf{I}$, and $\tilde{\mathbf{D}}$ is the corresponding degree matrix of $\tilde{\mathbf{A}}$
+		\item Simplified Graph Convolution (SGC; \href{http://proceedings.mlr.press/v97/wu19e/wu19e.pdf}{Wu \textit{et al.}, ICML 2019}):
+		$$\mathbf{H}=\text{Softmax}\left(\left(\tilde{\mathbf{D}}^{-\frac{1}{2}}\tilde{\mathbf{A}}\tilde{\mathbf{D}}^{-\frac{1}{2}}\right)^K\mathbf{X}\mathbf{W}\right)$$
+		Near state-of-the-art on many tasks of interest, and very efficient to train
+		\item Chebyshev Networks (ChebyNet; \href{https://papers.nips.cc/paper/2016/file/04df4d434d481c5bb723be1b6df1ee65-Paper.pdf}{Defferrard \textit{et al.}, NIPS 2016}):
+		$$\mathbf{H}=\sigma\left(\sum_{k=0}^K\alpha_k\left(\frac{2}{\lambda_\text{max}}\mathbf{L}_\text{sym}-\mathbf{I}\right)^k\mathbf{X}\mathbf{W}_k\right)$$
+		where 
+		\begin{itemize}[topsep=0pt]
+			\item $\lambda_\text{max}$ is the largest eigenvalue of $\mathbf{L}_\text{sym}$ 
+			\item $\alpha_k$ is the order-$k$ coefficient of its Chebyshev polynomial
+		\end{itemize}
+		GCN can be interpreted as a ChebyNet with $K=1$ and $\lambda_\text{max}\approx2$
+	\end{itemize}
+	
+\end{enumerate}
+
 \newpage
 
 \subsection*{Appendix: Mathematical Notations}
@@ -208,7 +276,8 @@
 	$\displaystyle f$ & A function \\
 	$\displaystyle \bm{F}$ & A matrix-valued function \\
 	$\displaystyle \pi$ & A permutation \\
-	$\displaystyle \phi, \psi, \cdots$ & Learnable functions (e.g., MLPs) \\
+	$\displaystyle \phi, \psi, \rho, \cdots$ & Learnable functions (e.g., MLPs) \\
+	$\displaystyle \sigma$ & A non-linear activation function (e.g., sigmoid, ReLU) \\
 	$\displaystyle \oplus$ & A permutation-invariant operator (e.g., sum, mean, min, max)
 \end{tabular}
 
