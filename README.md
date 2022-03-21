@@ -5,3 +5,4 @@ Topics included:
  
 1. Primer on Graph Representations
 2. Permutation Invariance and Equivariance
+3. Graph Neural Networks
