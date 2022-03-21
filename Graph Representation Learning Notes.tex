@@ -32,7 +32,7 @@
 
 \begin{document}
 \centering
-\section*{Representation Learning on Graphs and Networks (L45)\\CST Part III / MPhil in ACS}
+\section*{\vspace*{-2\baselineskip}\\Representation Learning on Graphs and Networks (L45)\\CST Part III / MPhil in ACS}
 \MyAuthor
 
 \justifying
@@ -45,17 +45,19 @@
 	A \textit{graph} $\mathcal{G}=(\mathcal{V}, \mathcal{E})$ is a collection of nodes $\mathcal{V}$ and edges $\mathcal{E}\subseteq\mathcal{V}\times\mathcal{V}$
 	
 	The edges can be represented by an \textit{adjacency matrix}, $\mathbf{A}\in\mathbb{R}^{|\mathcal{V}|\times|\mathcal{V}|}$, such that
+	\vspace*{-0.5\baselineskip}
 	$$A_{uv}=\begin{cases}
 		1 &\text{if }(u,v)\in\mathcal{E}\\
 		0 &\text{otherwise}
 	\end{cases}$$
 
-	\item Some interesting graph types:
+	\item \vspace*{-\baselineskip}Some interesting graph types:
 	\begin{itemize}[topsep=0pt]
 		\item \textbf{Undirected}: $\forall u, v\in\mathcal{V}.\ (u,v)\in\mathcal{E}\Longleftrightarrow (u,v)\in\mathcal{E}$ (i.e., $\mathbf{A}^\top=\mathbf{A}$)
 		\item \textbf{Weighted}: provided \textit{edge weight} $w_{uv}$ for every edge $(u,v)\in\mathcal{E}$
 		\item \textbf{Multirelational}:~various~\textit{edge~types},~i.e.~$(u,t,v)\in\mathcal{E}$~if~there~exists~an~edge~$(u,v)$~linked~by~type~$t$
 		\item \textbf{Heterogeneous}: various \textit{node types}
+		\item \textbf{Homophilic}: nodes tend to connect to other similar nodes (opposite: \textbf{heterophilic})
 	\end{itemize}
 
 	\item Machine learning tasks on graphs by domain:
@@ -71,11 +73,14 @@
 	\item Node statistics:
 	\begin{itemize}[topsep=0pt]
 		\item \textbf{Degree}: amount of edges the node is incident to:
+		\vspace*{-0.5\baselineskip}
 		$$d_u=\sum_{v\in\mathcal{V}}A_{uv}$$
-		\item \textbf{Centrality}: a measure of how ``central'' the node is in the graph: how often do infinite random walks visit the node?
+		\item \vspace*{-0.5\baselineskip}\textbf{Centrality}: a measure of how ``central'' the node is in the graph (how often do infinite random walks visit the node)
+		\vspace*{-0.25\baselineskip}
 		$$d_u=\lambda^{-1}\sum_{v\in\mathcal{V}}A_{uv}e_v$$
+		\vspace*{-0.25\baselineskip}
 		where $\mathbf{e}\in\mathbb{R}^{|\mathcal{V}|}$ is the largest eigenvector of $\mathbf{A}$, with corresponding eigenvalue $\lambda$
-		\item \textbf{Clustering coefficient}: a measure of ``clusteredness'': are neighbours connected amongst each other?
+		\item \textbf{Clustering coefficient}: a measure of ``clusteredness'' (are neighbours connected amongst each other)
 		$$c_u=\frac{\left|\big\{(v_1, v_2)\in\mathcal{E}\big|v_1, v_2\in\mathcal{N}(u)\big\}\right|}{{d_u \choose 2}}$$
 	\end{itemize}
 
@@ -94,7 +99,7 @@
 %		\end{itemize}
 %	\end{itemize}
 
-	\item Graph Laplacian:
+	\item \vspace*{-0.5\baselineskip}Graph Laplacian:
 	
 	Let $\mathbf{D}$ be the diagonal (out)-degree matrix of the graph, i.e., $D_{uu}=\sum_{v\in\mathcal{V}}A_{ij}$. Then:
 	\begin{itemize}[topsep=0pt]
@@ -107,10 +112,11 @@
 	\begin{itemize}[topsep=0pt]
 		\item For undirected graphs, $\mathbf{L}$ is \textit{symmetric} ($\mathbf{L}^\top=\mathbf{L}$) and \textit{positive semi-definite} ($\forall\mathbf{x}\in\mathbb{R}^{|\mathcal{V}|}.\ \mathbf{x}^\top\mathbf{L}\mathbf{x}\geq0$)
 		\item For undirected graphs:
+		\vspace*{-0.5\baselineskip}
 		$$\forall \mathbf{x}\in\mathbb{R}^{|\mathcal{V}|}.\ \mathbf{x}^\top\mathbf{L}\mathbf{x}=\frac{1}{2}\sum_{u\in\mathcal{V}}\sum_{v\in\mathcal{V}}A_{uv}(x_u-x_v)^2=\sum_{(u,v)\in\mathcal{E}}(x_u-x_v)^2$$
-		\item $\mathbf{L}$ has $|\mathcal{V}|$ nonnegative eigenvalues: $\lambda_1\geq\cdots\geq\lambda_{|V|}=0$
+		\item \vspace*{-0.5\baselineskip}$\mathbf{L}$ has $|\mathcal{V}|$ nonnegative eigenvalues: $\lambda_1\geq\cdots\geq\lambda_{|V|}=0$
 	\end{itemize}
-	\newpage
+	
 	\item Spectral clustering:
 	\begin{itemize}[topsep=0pt]
 		\item Two-way cut: partition the graph into $\mathcal{A}\subseteq\mathcal{V}$ and its complement $\mathcal{A}_c\subseteq\mathcal{V}$:
@@ -238,14 +244,16 @@
 		\mathbf{h}_i=\phi\left(\mathbf{x}_i,\displaystyle\bigoplus_{j\in\mathcal{N}_i}\psi(\mathbf{x}_i,\mathbf{x}_j)\right)
 	\end{array}$$
 	
-	\item Convolutional GNNs:
+	\item Convolutional GNNs: features of neighbourhood aggregated with fixed weights
 	\begin{itemize}[topsep=0pt]
 		\item Graph Convolutional Network (GCN; \href{https://openreview.net/pdf?id=SJU4ayYgl}{Kipf \& Welling, ICLR 2017}):
 		$$\mathbf{H}=\sigma\left(\tilde{\mathbf{D}}^{-\frac{1}{2}}\tilde{\mathbf{A}}\tilde{\mathbf{D}}^{-\frac{1}{2}}\mathbf{X}\mathbf{W}\right)$$
 		where $\tilde{\mathbf{A}}=\mathbf{A}+\mathbf{I}$, and $\tilde{\mathbf{D}}$ is the corresponding degree matrix of $\tilde{\mathbf{A}}$
+		
 		\item Simplified Graph Convolution (SGC; \href{http://proceedings.mlr.press/v97/wu19e/wu19e.pdf}{Wu \textit{et al.}, ICML 2019}):
 		$$\mathbf{H}=\text{Softmax}\left(\left(\tilde{\mathbf{D}}^{-\frac{1}{2}}\tilde{\mathbf{A}}\tilde{\mathbf{D}}^{-\frac{1}{2}}\right)^K\mathbf{X}\mathbf{W}\right)$$
 		Near state-of-the-art on many tasks of interest, and very efficient to train
+		
 		\item Chebyshev Networks (ChebyNet; \href{https://papers.nips.cc/paper/2016/file/04df4d434d481c5bb723be1b6df1ee65-Paper.pdf}{Defferrard \textit{et al.}, NIPS 2016}):
 		$$\mathbf{H}=\sigma\left(\sum_{k=0}^K\alpha_k\left(\frac{2}{\lambda_\text{max}}\mathbf{L}_\text{sym}-\mathbf{I}\right)^k\mathbf{X}\mathbf{W}_k\right)$$
 		where 
@@ -253,7 +261,40 @@
 			\item $\lambda_\text{max}$ is the largest eigenvalue of $\mathbf{L}_\text{sym}$ 
 			\item $\alpha_k$ is the order-$k$ coefficient of its Chebyshev polynomial
 		\end{itemize}
-		GCN can be interpreted as a ChebyNet with $K=1$ and $\lambda_\text{max}\approx2$
+		GCN can be represented by a ChebyNet with $K=1$ and $\lambda_\text{max}\approx2$
+	\end{itemize}
+
+	\item Attentional GNNs: features of neighbourhood aggregated with implicit weights (attention)
+	\begin{itemize}[topsep=0pt]
+		\item Mixture Model CNN (MoNet; \href{https://openaccess.thecvf.com/content_cvpr_2017/papers/Monti_Geometric_Deep_Learning_CVPR_2017_paper.pdf}{Monti \textit{et al.}, CVPR 2017}):
+		$$\mathbf{h}_u=\sigma\left(\sum_{u\in\mathcal{N}(v)}w\big(\mathbf{e}(u,v)\big)\mathbf{W}\mathbf{x}_v\right)$$
+		where 
+		\begin{itemize}[topsep=0pt]
+			\item $\mathbf{e}:\mathcal{V}^2\to\mathbb{R}^k$ is a pseudo-coordinate function that extracts a vector-based representation of the $(u,v)$ edge
+			\item $w: \mathbb{R}^k\to\mathbb{R}$ is a weighting function converting the vector $\mathbf{e}$ into an aggregation coefficient
+		\end{itemize}
+		MoNet can represent all isotropic GNNs and many standard anisotropic GNNs: for example, GCN can be represented by a MoNet with 
+		$$\begin{array}{cc}
+			\mathbf{e}=\begin{bmatrix}
+				\text{deg}(u) \\ \text{deg}(v) 
+			\end{bmatrix}\quad & 
+			\quad w(\mathbf{e})=\left(1-\left|1-\frac{1}{\sqrt{e_1}}\right|\right)\left(1-\left|1-\frac{1}{\sqrt{e_2}}\right|\right)
+		\end{array}$$
+	
+		\item Graph Attention Networks (GAT; \href{https://openreview.net/pdf?id=rJXMpikCZ}{Veli\v{c}kovi\'{c} \textit{et al.}, ICLR 2018}):
+		$$\mathbf{h}_u=\sigma\left(\sum_{u\in\mathcal{N}(v)}\alpha(\mathbf{x}_u,\mathbf{x}_v)\mathbf{W}\mathbf{x}_v\right)$$
+		In practice, to prevent over-fitting on the (now deprecated) datasets at that time, linear (static) attention mechanism was used:
+		\begin{gather*}
+			e(\mathbf{x}_u,\mathbf{x}_v)=\text{LeakyReLU}(\mathbf{a}^\top[\mathbf{x}_u\Vert\mathbf{x}_v]) \\
+			\alpha(\mathbf{x}_u,\mathbf{x}_v)=\text{Softmax}\big(e(\mathbf{x}_u,\mathbf{x}_v)\big)=\frac{\exp\big(e(\mathbf{x}_u,\mathbf{x}_v)\big)}{\sum_{w\in\mathcal{N}(u)}\exp\big(e(\mathbf{x}_u,\mathbf{x}_w)\big)}
+		\end{gather*}
+	
+		\item GATv2 (\href{https://openreview.net/pdf?id=F72ximsx7C1}{Brody \textit{et al.}, ICLR 2022}): uses a universal approximator (a 2-layer MLP) that can learn any attention function, including dynamic attention
+		$$e(\mathbf{x}_u,\mathbf{x}_v)=\mathbf{a}^\top\text{LeakyReLU}(\mathbf{W}[\mathbf{x}_u\Vert\mathbf{x}_v])$$
+		\makebox[\linewidth][s]{GATv2 requires explicitly materialising the concatenation $[\mathbf{x}_u\Vert\mathbf{x}_v]$, and therefore has}\\ $O(|\mathcal{V}|+|\mathcal{E}|)$ storage complexity (in a graph, $|\mathcal{E}|$ is often significantly larger than $|\mathcal{V}|$)
+		
+		\item Multi-head attention (\href{https://papers.nips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf}{Vaswani \textit{et al.}, NIPS 2017}):
+		$$\mathbf{h}_u=\sigma\left(\sum_{u\in\mathcal{N}(v)}\alpha_1(\mathbf{x}_u,\mathbf{x}_v)\mathbf{W}_1\mathbf{x}_v\right)\Bigg\Vert\ \cdots\ \Bigg\Vert\ \sigma\left(\sum_{u\in\mathcal{N}(v)}\alpha_K(\mathbf{x}_u,\mathbf{x}_v)\mathbf{W}_K\mathbf{x}_v\right)$$
 	\end{itemize}
 	
 \end{enumerate}
